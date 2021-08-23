@@ -1,35 +1,183 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
-
-First, run the development server:
+## Correr
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- enviar las cabezeras
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+content-type: application/json
+x-hasura-admin-secret: irOX9JWHWCH8gPvzrePQ6OtUawRC29kiN95QPN1XzZxF2f7v4csByIK1ZyH0mdiz
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- Query identificationType tipos de identification
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```
+query identificationType {
+  identificationType {
+    id
+    name
+  }
+}
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+```
+- Query tipos de de documentos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+query ownersType {
+  ownersType {
+    id
+    name
+  }
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
 
-## Deploy on Vercel
+- Query tipos de construccion
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+query buildingsType {
+  buildingsType {
+    id
+    name
+  }
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+```
+
+- Query obtener predios
+```
+
+query estates{
+  estates{
+    appraisalIdentifier
+    department
+    id
+    municipality
+    name
+  }
+}
+```
+
+- Mutacion insertar un predio
+```
+mutation insert_estates_one($object:estates_insert_input!){
+  insert_estates_one(object: $object){
+    appraisalIdentifier
+    department
+    id
+    municipality
+    name
+  }
+}
+
+----------
+
+variables
+{
+  "object": {
+    "name": "Mi predio en flandes",
+    "department": "Cundinamarca",
+    "municipality": "Flandes"
+  }
+}
+
+```
+
+- Mutacion insertar terrero
+
+```
+mutation insert_terrains_one ($object:terrains_insert_input!){ 
+  insert_terrains_one(object: $object){
+    areaSquareMeters
+    commercialValue
+    estate
+    hasBuildings
+    id
+    isNearWater
+    isUrban
+  }
+}
+
+-----------------------
+variables
+
+{
+  "object": {
+"estate": "af82d4a0-d0da-43de-95b6-9708b2f0e22b",
+    "areaSquareMeters": 100,
+    "commercialValue": 10000000,
+    "hasBuildings": false,
+    "isNearWater": false,
+    "isUrban": false
+  }
+}
+
+```
+- Query obtener terreros
+
+```
+query terrains($where:terrains_bool_exp){
+  terrains(where:$where) {
+    areaSquareMeters
+    commercialValue
+    estate
+    hasBuildings
+    id
+    isNearWater
+    isUrban
+  }
+}
+___________-
+variables
+{
+  "where": {
+"estate": {
+  "_eq": "af82d4a0-d0da-43de-95b6-9708b2f0e22b"
+}
+}
+}
+```
+
+- Mutacion Insertar construcciones
+
+```
+mutation insert_buildings_one($object:buildings_insert_input!){
+  insert_buildings_one(object: $object, ){
+    address
+    buildingType
+    estate
+    floors
+    id
+    totalAreaSquareMeters
+  }
+}
+```
+- Query obtener construcciones
+
+```
+query buildings($where:buildings_bool_exp){
+ buildings(where:$where) {
+   address
+   buildingType
+   estate
+   floors
+   id
+   totalAreaSquareMeters
+ }
+}
+
+___________
+variables
+{
+  "where": {
+"estate": {
+  "_eq": "af82d4a0-d0da-43de-95b6-9708b2f0e22b"
+}
+}
+}
+
+```
 
